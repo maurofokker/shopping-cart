@@ -39,7 +39,8 @@ export default {
     // },
     // TO
     ...mapState({
-      products: state => state.products
+      // products: state => state.products
+      products: state => state.products.items
     }),
 
     // FROM

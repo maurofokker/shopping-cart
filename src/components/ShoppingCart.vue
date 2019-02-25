@@ -32,7 +32,9 @@ export default {
       }),
 
       ...mapState({
-        checkoutStatus: 'checkoutStatus'
+        // checkoutStatus: 'checkoutStatus'
+        // using modules should be
+        checkoutStatus: state => state.cart.checkoutStatus
       })
     },
 

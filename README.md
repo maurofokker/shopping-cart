@@ -513,6 +513,27 @@ export default {
   }
   ```
 
+### Vuex Modules
+
+- As our application grows in scale, the store can get really bloated
+- Modules can contain its own state, mutations, actions and getters and even nested modules
+- [Vuex modules reference](https://vuex.vuejs.org/guide/modules.html)
+- A module can contain all the logic about the cart, and another module can contain the logic about authentication
+- Modules export an object with state, mutations, actions, getters options
+
+  ```js
+  export default {
+    state: {},
+    getters: {},
+    mutations: {}
+  }
+  ```
+
+- Project modules can be found on `src/store/modules/cart.js` and `src/store/modules/products.js`
+- To reference a state outside the module we need to reference to the `global state` _aka_ `root state`
+  - In _Getters_ the `root state` is passed as 3rd parameter `cartProducts (state, getters, rootState) {..}`
+  - In _Actions_ the `root state` is inside the _context_ in the first parameter `addProductToCart({state, getters, commit, rootState}, product) {..}`
+
 ## Vue Filters
 
 - [Filters Guide](https://vuejs.org/v2/guide/filters.html)
