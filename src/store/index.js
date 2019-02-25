@@ -9,7 +9,9 @@ Vue.use(Vuex)
 // creates a Vuex Store
 export default new Vuex.Store({
   state: { // same as data in Vue
-    products: []
+    products: [],
+    // {id, quantity}
+    cart: []
   },
 
   getters: {  // same as computed properties in Vue
@@ -28,6 +30,19 @@ export default new Vuex.Store({
           resolve()
         })
       })
+    },
+    // it is better to use discrete names to know what the action or mutation does by reading its name
+    addProductToCart (context, product) {
+      if (product.inventory > 0) {
+        // find cartItem
+        const cartItem = context.state.cart.find(item => item.id === product.id)
+        if (!cartItem) { // push product to cart
+          context.commit('pushProductToCart', product.id)
+        } else { // increment item quantity
+          context.commit('incrementItemQuantity', cartItem)
+        }
+        context.commit('decrementProductInventory', product) // pass incoming product to decrement inventory
+      }
     }
   },
 
@@ -35,6 +50,21 @@ export default new Vuex.Store({
     setProducts (state, products) { // first parameter will always be the current state and the second the payload
       // update products
       state.products = products
+    },
+
+    pushProductToCart (state, productId) {
+      state.cart.push({
+        id: productId,
+        quantity: 1
+      })
+    },
+
+    incrementItemQuantity (state, cartItem) {
+      cartItem.quantity++
+    },
+
+    decrementProductInventory (state, product) {
+      product.inventory--
     }
   }
 
