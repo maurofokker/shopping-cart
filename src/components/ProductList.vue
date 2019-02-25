@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import store from '@/store/index'
 
 export default {
 
@@ -23,13 +22,13 @@ export default {
   },
   computed: {
     products () {
-      return store.getters.availableProducts
+      return this.$store.getters.availableProducts
     }
   },
   // created hook: everyting you put here will run right after the instace is created
   created () {
     this.loading = true
-    store.dispatch('fetchProducts')
+    this.$store.dispatch('fetchProducts')
       .then(() => this.loading = false)
   }
 }

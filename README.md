@@ -248,3 +248,49 @@ feels more complex thax Vuex does
   }
   </script>
   ```
+
+#### Using store globally
+
+- We can pass `store` as an option in the `Vue` instance
+
+  ```js
+  // main.js
+  import Vue from 'vue'
+  import App from './App'
+  import store from '@/store/index'
+
+  Vue.config.productionTip = false
+
+  /* eslint-disable no-new */
+  new Vue({
+    el: '#app',
+    store,
+    render: h => h(App)
+  })
+
+  ```
+
+- The global store is now available in components using `this.$store`
+
+  ```js
+  // ProductList.vue
+  export default {
+
+    data () {
+      return {
+        loading: false
+      }
+    },
+    computed: {
+      products () {
+        return this.$store.getters.availableProducts
+      }
+    },
+    // created hook: everyting you put here will run right after the instace is created
+    created () {
+      this.loading = true
+      this.$store.dispatch('fetchProducts')
+        .then(() => this.loading = false)
+    }
+  }
+  ```
