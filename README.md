@@ -534,6 +534,67 @@ export default {
   - In _Getters_ the `root state` is passed as 3rd parameter `cartProducts (state, getters, rootState) {..}`
   - In _Actions_ the `root state` is inside the _context_ in the first parameter `addProductToCart({state, getters, commit, rootState}, product) {..}`
 
+#### Namespacing
+
+- By default, actions, mutations and getters inside modules are still registered under the _global namespace_ this allows multiple modules to react to the same mutation/action type (_names are the same in the modules_)
+- Modules must bu marked as `namespaced: true,` in the options to be more sef-contained
+- When module is namespaced local getters, dispatch and commit doesnt need to be prefixed with the module name inside the same module
+- To use global state and getters you can use _rootState_ and _rootGetters_ passed as 3rd and 4th arguments to _getter_ functions, and also exposed as properties on the _context object_ passed to action functions.
+- To _dispatch actions_ or _commit mutations_ starting in the global namespace, pass `{root: true}` as the 3rd argument to `dispatch` and `commit`
+
+  ```js
+  export default {
+    namespaced: true,
+
+    getters: {
+      cartProducts (state, getters, rootState, rootGetters) {
+        return state.items.map(cartItem => {
+          const product = rootState.products.items.find(product => product.id === cartItem.id)
+          return {
+            title: product.title,
+            price: product.price,
+            quantity: cartItem.quantity
+          }
+        })
+      },
+
+      cartTotal (state, getters) {
+        return getters.cartProducts.reduce((total, product) => total + product.price * product.quantity, 0)
+      },
+    },
+
+    actions: {
+      // inside the context the global state is exposed as rootState too
+      addProductToCart({state, getters, commit, rootState, rootGetters}, product) {
+        if (rootGetters['products/productIsInStock'](product)) { // using getter outside module scope
+          const cartItem = state.items.find(item => item.id === product.id)
+          if (!cartItem) {
+            commit('pushProductToCart', product.id)
+          } else {
+            commit('incrementItemQuantity', cartItem)
+          }
+          commit('products/decrementProductInventory', product, {root: true})
+        }
+      },
+
+      checkout({state, commit}) {
+        shop.buyProducts(
+          state.items,
+          () => {
+            commit('emptyCart')
+            commit('setCheckoutStatus', 'success')
+          },
+          () => {
+            commit('setCheckoutStatus', 'fail')
+          }
+        )
+      }
+    }
+  }
+  ```
+
+- [Oficial Vuex namespacing reference](https://vuex.vuejs.org/guide/modules.html#namespacing)
+
 ## Vue Filters
 
 - [Filters Guide](https://vuejs.org/v2/guide/filters.html)

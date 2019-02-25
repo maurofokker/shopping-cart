@@ -26,20 +26,21 @@ export default {
       //   return this.$store.getters.cartTotal
       // }
       // TO
-      ...mapGetters({
+      ...mapGetters('cart', {
         products: 'cartProducts',
         total: 'cartTotal'
       }),
 
-      ...mapState({
+      ...mapState('cart', {
         // checkoutStatus: 'checkoutStatus'
         // using modules should be
-        checkoutStatus: state => state.cart.checkoutStatus
+        // from state.cart.checkoutStatus => to state.checkoutStatus bc we are using the namespace
+        checkoutStatus: state => state.checkoutStatus
       })
     },
 
     methods: {
-      ...mapActions(['checkout']) // it can accept array or object
+      ...mapActions('cart', ['checkout']) // it can accept array or object, 1st parameter is the namespace
     }
 }
 </script>

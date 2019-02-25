@@ -48,7 +48,7 @@ export default {
     //   return this.$store.getters.productIsInStock
     // }
     // TO
-    ...mapGetters({
+    ...mapGetters('products', { // use the namespace
       productIsInStock: 'productIsInStock' // use key: value if you want to use another name in component with the key
     })
   },
@@ -60,8 +60,8 @@ export default {
     // }
     // TO
     ...mapActions({
-      fetchProducts: 'fetchProducts',
-      addProductToCart: 'addProductToCart'
+      fetchProducts: 'products/fetchProducts',  // for use with namespaces prefix the corresponding namespace
+      addProductToCart: 'cart/addProductToCart' // for use with namespaces prefix the corresponding namespace
     })
   },
   // created hook: everyting you put here will run right after the instace is created
