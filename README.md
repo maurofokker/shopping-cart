@@ -81,7 +81,7 @@ feels more complex thax Vuex does
 - Mutations are wrappers around individual state changes
 - Mutations should always be used to update the state
 - Never update state directly calling a mutation instead you need to `commit` a mutation
-- Declaring a mutation
+- Declaring a mutation [vuex reference](https://vuex.vuejs.org/guide/mutations.html)
 
   ```js
   export default new Vuex.Store({
@@ -121,6 +121,52 @@ feels more complex thax Vuex does
         // we need to commit a mutation passing the name of the mutation
         // and passing the payload that is the returned products
         store.commit('setProducts', products)
+      })
+    }
+  }
+  ```
+
+#### Vuex Options: Getters
+
+- Vuex `getters` are like `computer properties`
+- They are perfect when you need to filter or calculate something at runtime
+- As _computed properties_ `getters` track their own dependencies and automatically update when a dependency changes
+- `getters` accept `state` as first argument and other `getters` as the second argument
+- [vuex getter reference](https://vuex.vuejs.org/guide/getters.html)
+
+  ```js
+  export default new Vuex.Store({
+    state: { // same as data in Vue
+      products: []
+    },
+
+    getters: {  // same as computed properties in Vue
+      availableProducts (state, getters) {
+        return state.products.filter(product => product.inventory > 0)
+      }
+    },
+
+    // actions, mutations
+
+  })
+  ```
+
+- Using getters
+
+  ```js
+  import shop from '@/api/shop'
+  import store from '@/store/index'
+
+  export default {
+
+    computed: {
+      products () { // accessing to getters in store
+        return store.getters.availableProducts
+      }
+    },
+    created () {
+      shop.getProducts(products => {
+        // use mutation
       })
     }
   }

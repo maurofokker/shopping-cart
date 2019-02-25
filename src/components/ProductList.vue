@@ -16,7 +16,7 @@ export default {
   // data () {..} is not used because we keep data is stored globally in the state
   computed: {
     products () {
-      return store.state.products
+      return store.getters.availableProducts
     }
   },
   // created hook: everyting you put here will run right after the instace is created
