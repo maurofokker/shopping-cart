@@ -36,3 +36,42 @@ term productivity
 - If the app is quite small or simple you can stick to managing state within components
 - You can start moving pieces of state to Vuex when juggling between components
 feels more complex thax Vuex does
+
+### Steps to use vuex
+
+1. Add `vuex` to the app with `yarn add vuex` or `npm install vuex`
+2. Create the container store that will hold the whole application state (`@/store/index.js`)
+
+  ```js
+  import Vuex from 'vuex'
+  import Vue from 'vue'
+
+  // tells Vue to use Vuex
+  Vue.use(Vuex)
+
+  // creates a Vuex Store
+  new Vuex.Store({
+    state: { // same as data in Vue
+      products: []
+    },
+
+    getters: {  // same as computed properties in Vue
+      productsCount () {
+        // return the length of the products array
+      }
+    },
+
+    actions: { // same as components methods
+      fetchProducts () { // perform API call to fetch the products
+
+      }
+    },
+
+    mutations: { // responsible for setting and updating the state
+      setProducts () {
+        // update products
+      }
+    }
+
+  })
+  ```
