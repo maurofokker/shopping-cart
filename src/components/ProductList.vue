@@ -22,34 +22,55 @@
 </template>
 
 <script>
+import {mapState, mapGetters, mapActions} from 'vuex'
 
 export default {
 
   data () {
     return {
-      loading: false
+      loading: false,
+      productIndex: 1
     }
   },
   computed: {
-    products () {
-      // return this.$store.getters.availableProducts
-      return this.$store.state.products
-    },
+    // FROM
+    // products () {
+    //     return this.$store.state.products
+    // },
+    // TO
+    ...mapState({
+      products: state => state.products
+    }),
 
-    productIsInStock () {
-      return this.$store.getters.productIsInStock
-    }
+    // FROM
+    // productIsInStock () {
+    //   return this.$store.getters.productIsInStock
+    // }
+    // TO
+    ...mapGetters({
+      productIsInStock: 'productIsInStock' // use key: value if you want to use another name in component with the key
+    })
   },
 
   methods: {
-    addProductToCart (product) {
-      this.$store.dispatch('addProductToCart', product)
-    }
+    // FROM
+    // addProductToCart (product) {
+    //   this.$store.dispatch('addProductToCart', product)
+    // }
+    // TO
+    ...mapActions({
+      fetchProducts: 'fetchProducts',
+      addProductToCart: 'addProductToCart'
+    })
   },
   // created hook: everyting you put here will run right after the instace is created
   created () {
     this.loading = true
-    this.$store.dispatch('fetchProducts')
+    // FROM
+    // this.$store.dispatch('fetchProducts')
+    //   .then(() => this.loading = false)
+    // TO     <- replace $store.dispatch with mapActions helper
+    this.fetchProducts()
       .then(() => this.loading = false)
   }
 }

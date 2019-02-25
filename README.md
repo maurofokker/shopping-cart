@@ -75,6 +75,40 @@ feels more complex thax Vuex does
 
   })
   ```
+#### Vuex State option: `mapState` Helper
+
+- When a component needs to make use of multiple store state properties or getters, declaring all these computed properties can get repetitive and verbose.
+- We can make use of the mapState helper which generates computed getter functions for us
+
+  ```jsx
+  <template>
+    <div>
+      <h1>Shopping cart</h1>
+      <ul>
+        <li v-for="product in products" :key="product.id">
+          {{product.title}} - {{product.price | currency}} - {{product.quantity}}
+        </li>
+      </ul>
+      <p>Total: {{total | currency }}</p>
+      <button @click="checkout">Checkout</button>
+      <p v-if="checkoutStatus">{{checkoutStatus}}</p>
+    </div>
+  </template>
+
+  <script>
+  import {mapState} from 'vuex'
+
+  export default {
+    computed: {
+        ...mapState({
+          checkoutStatus: 'checkoutStatus'
+        })
+      },
+  }
+  </script>
+  ```
+
+  - Above we have replaced in template from `$store.state.checkoutStatus` to use just the _mapGetter_ `checkoutStatus`
 
 #### Vuex Options: Mutations
 
@@ -232,6 +266,47 @@ feels more complex thax Vuex does
   </script>
   ```
 
+##### `mapGetters` Helper
+
+- This helper simply maps _getters_ to local computed properties
+- _mapGetter_ accepts an array or object as parameter
+- You can use `...` spread object operator to mix _getters_ with local component computed properties
+
+  ```jsx
+  <template>
+    <div>
+      <h1>Shopping cart</h1>
+      <ul>
+        <li v-for="product in products" :key="product.id">
+          {{product.title}} - {{product.price | currency}} - {{product.quantity}}
+        </li>
+      </ul>
+      <p>Total: {{total | currency }}</p>
+    </div>
+  </template>
+  <script>
+  import {mapGetters} from 'vuex'
+
+  export default {
+    computed: {
+        // FROM
+        // products () {
+        //   return this.$store.getters.cartProducts
+        // },
+
+        // total () {
+        //   return this.$store.getters.cartTotal
+        // }
+        // TO
+        ...mapGetters({
+          products: 'cartProducts',
+          total: 'cartTotal'
+        })
+      },
+  }
+  </script>
+  ```
+
 #### Vuex Options: Actions
 
 - Actions are similar to mutations, the differences being that:
@@ -310,6 +385,87 @@ feels more complex thax Vuex does
   ```
 
 > In Vuex, actions are responsible for the logic of when a mutation should be dispatched, while each mutation is only responsible for one single state change.
+
+##### `mapActions` Helper
+
+- You can dispatch actions in components with `this.$store.dispatch('xxx')`, or use the `mapActions` helper
+- `mapActions` maps component methods to `store.dispatch` calls (requires root store injection)
+
+  ```jsx
+  <template>
+    <div>
+      <h1>Product List</h1>
+      <img
+        v-if="loading"
+        src="https://i.imgur.com/JfPpwOA.gif"
+        alt="">
+      <ul v-else>
+        <li
+          v-for="product in products"
+          :key="product.id"
+        >
+          {{product.title}} - {{product.price | currency}} - {{product.inventory}}
+          <button
+            :disabled="!productIsInStock(product)"
+            @click="addProductToCart(product)"
+          >Add to cart
+          </button>
+        </li>
+      </ul>
+    </div>
+  </template>
+
+  <script>
+  import {mapActions} from 'vuex'
+
+  export default {
+
+    data () {
+      // data
+    },
+    computed: {
+      // computed properties ... mapGetters ... mapState
+    },
+
+    methods: {
+      // FROM
+      // addProductToCart (product) {
+      //   this.$store.dispatch('addProductToCart', product)
+      // }
+      // TO
+      ...mapActions({
+        fetchProducts: 'fetchProducts',
+        addProductToCart: 'addProductToCart'
+      })
+    },
+    // created hook: everyting you put here will run right after the instace is created
+    created () {
+      this.loading = true
+      // FROM
+      // this.$store.dispatch('fetchProducts')
+      //   .then(() => this.loading = false)
+      // TO     <- replace $store.dispatch with mapActions helper
+      this.fetchProducts()  // reuse of method from mapActions
+        .then(() => this.loading = false)
+    }
+  }
+  </script>
+  ```
+
+- `mapActions` can accept payloads
+
+```js
+import { mapActions } from 'vuex'
+
+export default {
+  // ...
+  methods: {
+    ...mapActions([
+      'incrementBy' // map `this.incrementBy(amount)` to `this.$store.dispatch('incrementBy', amount)`
+    ])
+  }
+}
+```
 
 #### Using store globally
 
