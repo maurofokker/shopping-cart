@@ -171,3 +171,80 @@ feels more complex thax Vuex does
     }
   }
   ```
+
+#### Vuex Options: Actions
+
+- Actions are similar to mutations, the differences being that:
+  - Instead of mutating the state, actions commit mutations.
+  - Actions can contain arbitrary asynchronous operations.
+- [Vuex actions reference](https://vuex.vuejs.org/guide/actions.html)
+- Action handlers receive a `context` object which exposes the same set of methods/properties on the store instance, so you can call _context.commit_ to commit a mutation, or access the state with _context.state_
+- Using ES6 object destructuring in argument we can do `myAction({commit, state})` instead of `myAction(context)`
+- Actions are triggered with the `store.dispatch` method
+- Mutations have to be _synchronous_ so it is bad calling directly but actions can perform _asynchronous_ operations
+
+  ```js
+  import shop from '@/api/shop'
+  export default new Vuex.Store({
+    state: { // same as data in Vue
+      products: []
+    },
+
+    actions: { // same as components methods
+      fetchProducts ({commit}) {
+        return new Promise((resolve, reject) => {
+          shop.getProducts(products => {
+            // we need to commit a mutation passing the name of the mutation
+            // and passing the payload that is the returned products
+            commit('setProducts', products)
+            resolve()
+          })
+        })
+      }
+    },
+
+    // getters, mutations
+
+  })
+  ```
+
+- Triggering an action
+
+  ```jsx
+  <template>
+    <div>
+      <h1>Product List</h1>
+      <img
+        v-if="loading"
+        src="https://i.imgur.com/JfPpwOA.gif"
+        alt="">
+      <ul v-else>
+        <li v-for="product in products" :key="product.id">{{product.title}} - {{product.price}}</li>
+      </ul>
+    </div>
+  </template>
+
+  <script>
+  import store from '@/store/index'
+
+  export default {
+
+    data () {
+      return {
+        loading: false
+      }
+    },
+    computed: {
+      products () {
+        return store.getters.availableProducts
+      }
+    },
+    // created hook: everyting you put here will run right after the instace is created
+    created () {
+      this.loading = true
+      store.dispatch('fetchProducts')
+        .then(() => this.loading = false)
+    }
+  }
+  </script>
+  ```

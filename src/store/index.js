@@ -1,5 +1,7 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
+import shop from '@/api/shop'
+import { resolve } from 'uri-js';
 
 // tells Vue to use Vuex
 Vue.use(Vuex)
@@ -17,9 +19,15 @@ export default new Vuex.Store({
   },
 
   actions: { // same as components methods
-    fetchProducts () { // perform API call to fetch the products
-      // make the call
-      // run setProducts mutation
+    fetchProducts (context) {
+      return new Promise((resolve, reject) => {
+        shop.getProducts(products => {
+          // we need to commit a mutation passing the name of the mutation
+          // and passing the payload that is the returned products
+          context.commit('setProducts', products)
+          resolve()
+        })
+      })
     }
   },
 
