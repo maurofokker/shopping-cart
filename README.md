@@ -294,3 +294,39 @@ feels more complex thax Vuex does
     }
   }
   ```
+
+## Vue Filters
+
+- [Filters Guide](https://vuejs.org/v2/guide/filters.html)
+- Allow to apply common text formatting
+- Can be used with _mustache interpolations {{}}_ and _v-bind expressions_
+- Should be appended at the end of the js expression denoted by the _| pipe symbol_
+- Global filter definition in `main.js`
+
+  ```js
+  import Vue from 'vue'
+  import App from './App'
+  import store from '@/store/index'
+  import {currency} from '@/currency'
+
+  Vue.config.productionTip = false
+  Vue.filter('currency', currency)  // set the currency filter globally
+
+  /* eslint-disable no-new */
+  new Vue({
+    el: '#app',
+    store,
+    render: h => h(App)
+  })
+  ```
+
+- Filter can be defined locally in components options (from reference)
+  ```js
+  filters: {
+    capitalize: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    }
+  }
+  ```
