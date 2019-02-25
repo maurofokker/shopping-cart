@@ -5,7 +5,7 @@ import Vue from 'vue'
 Vue.use(Vuex)
 
 // creates a Vuex Store
-new Vuex.Store({
+export default new Vuex.Store({
   state: { // same as data in Vue
     products: []
   },
@@ -18,13 +18,15 @@ new Vuex.Store({
 
   actions: { // same as components methods
     fetchProducts () { // perform API call to fetch the products
-
+      // make the call
+      // run setProducts mutation
     }
   },
 
   mutations: { // responsible for setting and updating the state
-    setProducts () {
+    setProducts (state, products) { // first parameter will always be the current state and the second the payload
       // update products
+      state.products = products
     }
   }
 

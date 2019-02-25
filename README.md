@@ -37,7 +37,7 @@ term productivity
 - You can start moving pieces of state to Vuex when juggling between components
 feels more complex thax Vuex does
 
-### Steps to use vuex
+### Steps to use vuex
 
 1. Add `vuex` to the app with `yarn add vuex` or `npm install vuex`
 2. Create the container store that will hold the whole application state (`@/store/index.js`)
@@ -50,7 +50,7 @@ feels more complex thax Vuex does
   Vue.use(Vuex)
 
   // creates a Vuex Store
-  new Vuex.Store({
+  export default new Vuex.Store({
     state: { // same as data in Vue
       products: []
     },
@@ -68,10 +68,60 @@ feels more complex thax Vuex does
     },
 
     mutations: { // responsible for setting and updating the state
-      setProducts () {
+      setProducts (state, payload) { // first parameter will always be the current state and the second the payload
         // update products
       }
     }
 
   })
+  ```
+
+#### Vuex Options: Mutations
+
+- Mutations are wrappers around individual state changes
+- Mutations should always be used to update the state
+- Never update state directly calling a mutation instead you need to `commit` a mutation
+- Declaring a mutation
+
+  ```js
+  export default new Vuex.Store({
+    state: { // same as data in Vue
+      products: []
+    },
+
+    // getters, actions
+
+    mutations: { // responsible for setting and updating the state
+      setProducts (state, products) { // first parameter will always be the current state and the second the payload
+        // update products
+        state.products = products
+      }
+    }
+
+  })
+  ```
+
+- Using store and updating state
+
+  ```js
+  import shop from '@/api/shop'
+  import store from '@/store/index'
+
+  export default {
+
+    // data () {..} is not used because we keep data is stored globally in the state
+    computed: {
+      products () {
+        return store.state.products
+      }
+    },
+    // hook will run right after the instace is created
+    created () {
+      shop.getProducts(products => {
+        // we need to commit a mutation passing the name of the mutation
+        // and passing the payload that is the returned products
+        store.commit('setProducts', products)
+      })
+    }
+  }
   ```
