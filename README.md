@@ -174,6 +174,64 @@ feels more complex thax Vuex does
   }
   ```
 
+##### Advanced Vuex Option: Dynamic Getters
+
+- High order functions allow to create dynamic getters
+- Dynamic getters allows us to pass arguments to getters, useful if you wanna query the store
+- Common use case: create a getter to find an item in the state using its _id_
+
+  ```js
+  getProductById (state, getters) {
+    return id => {
+      return state.products.find(product => product.id === id)
+    }
+  }
+  ```
+
+- Creating a dynamic getter in store
+
+  ```js
+    getters: {  // same as computed properties in Vue
+      productIsInStock () {
+        return (product) => {
+          return product.inventory > 0
+        }
+      }
+    },
+  ```
+
+- Using dynamic getter in component
+
+  ```jsx
+  <template>
+    <div>
+      <button
+        :disabled="!productIsInStock(product)"
+        @click="addProductToCart(product)"
+      >Add to cart
+      </button>
+    </div>
+  </template>
+
+  <script>
+
+  export default {
+
+    computed: {
+      productIsInStock () {
+        return this.$store.getters.productIsInStock
+      }
+    },
+
+    methods: {
+      addProductToCart (product) {
+        this.$store.dispatch('addProductToCart', product)
+      }
+    },
+  }
+  </script>
+  ```
+
 #### Vuex Options: Actions
 
 - Actions are similar to mutations, the differences being that:
