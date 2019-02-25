@@ -126,6 +126,8 @@ feels more complex thax Vuex does
   }
   ```
 
+> In Vuex, actions are responsible for the logic of when a mutation should be dispatched, while each mutation is only responsible for one single state change.
+
 #### Vuex Options: Getters
 
 - Vuex `getters` are like `computer properties`
@@ -248,6 +250,8 @@ feels more complex thax Vuex does
   }
   </script>
   ```
+
+> In Vuex, actions are responsible for the logic of when a mutation should be dispatched, while each mutation is only responsible for one single state change.
 
 #### Using store globally
 
